@@ -22,7 +22,7 @@ router.post('/register', asyncWrapper(async (req, res, next) => {
     const newUser = await User.addOne(username, password)
 
     res.status(201)
-    res.json({ user: newUser })
+    res.json(newUser)
 }))
 
 router.post('/login', asyncWrapper(async (req, res, next) => {
@@ -38,7 +38,7 @@ router.post('/login', asyncWrapper(async (req, res, next) => {
     if (!isMatch) throw { message: 'Username and password don\'t match', status: 400 }
 
     const token = await User.generateToken(user)
-    res.json({ token })
+    res.json(token)
 }))
 
 

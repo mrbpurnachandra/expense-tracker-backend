@@ -11,13 +11,13 @@ router.use(auth) // All routes are protected and requires auth
 router.get('/', asyncWrapper(async (req, res, next) => {
     const { startDate, endDate } = req.query
     const interval = {
-        startDate: new Date(startDate ?? process.env.APP_START_DATE),
-        endDate: new Date(endDate ?? Date.now())
+        startDate: new Date(startDate || process.env.APP_START_DATE),
+        endDate: new Date(endDate || Date.now())
     }
 
     const expenses = await Expense.findOnIntervalByUser(req.user.id, interval)
 
-    res.json({ expenses })
+    res.json(expenses)
 }))
 
 router.post('/', asyncWrapper(async (req, res, next) => {
@@ -28,7 +28,7 @@ router.post('/', asyncWrapper(async (req, res, next) => {
     const expense = await Expense.addOne(topic, amount, req.user.id, urgencyId)
 
     res.status(201)
-    res.json({ expense })
+    res.json(expense)
 }))
 
 router.get('/:id', asyncWrapper(async (req, res, next) => {
@@ -37,7 +37,7 @@ router.get('/:id', asyncWrapper(async (req, res, next) => {
     const expense = await Expense.findOneByUser(id, req.user.id)
     if (!expense) throw { message: 'Not Found', status: 404 }
 
-    res.json({ expense })
+    res.json(expense)
 }))
 
 router.put('/:id', asyncWrapper(async (req, res, next) => {
@@ -55,7 +55,7 @@ router.put('/:id', asyncWrapper(async (req, res, next) => {
     if (!isUpdated) throw { message: 'Server Error', status: 500 }
     const updatedExpense = await Expense.findOne(id)
 
-    res.json({ updated: updatedExpense })
+    res.json(updatedExpense)
 }))
 
 router.delete('/:id', asyncWrapper(async (req, res, next) => {
@@ -67,7 +67,7 @@ router.delete('/:id', asyncWrapper(async (req, res, next) => {
     const isDeleted = await Expense.deleteById(id)
     if(!isDeleted) throw { message: 'Server Error', status: 500}
 
-    res.json({ deleted: expense })
+    res.json(expense)
 }))
 
 module.exports = router
